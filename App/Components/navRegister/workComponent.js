@@ -33,7 +33,7 @@ export class WorkComponent extends HTMLElement {
       <div class="container" id="paisWork" style="display:block;">
           <pais-work></pais-work>
       </div>
-      <div class="container" id="regionWork" style="display:none;">
+      <div class="container" id="regionWork" style="display:block;">
           <region-work></region-work>
       </div>
       <div class="container" id="ciudadWork" style="display:none;">

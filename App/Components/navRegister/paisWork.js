@@ -1,186 +1,55 @@
-import {postWorks,patchContacts,deleteContacts} from '../../../Apis/work/workApi'
-import WorkModel from '../../../Models/workModel.js';
-const ruta = 'pais'
+import { postWorks } from "../../../Apis/work/workApi.js";
 
 export class PaisWork extends HTMLElement {
   constructor() {
     super();
     this.render();
-    this.saveData();
-    this.enabledBtns();
-    this.eventoEditar();
-    this.eventoEliminar();
-    this.disableFrm(true);
   }
 
   render() {
     this.innerHTML = /* html */ `
-        <div class="card mt-3">
-            <div class="card-header">
-                Registro de pais <span class="badge rounded-pill text-bg-primary" id="idView"></span>
-            </div>
-            <div class="card-body">
-                <form id="frmPais">
-                    <div class="row">
-                        <div class="col">
-                            <label for="nombreContacto" class="form-label">Nombre del pais</label>
-                            <input type="text" class="form-control" id="nombreContacto" name ="nombreContacto">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col">
-                            <div class="container mt-4 text-center">
-                                <a href="#" class="btn btn-primary"  id="btnNuevo" data-ed='[["#btnGuardar","#btnCancelar"],["#btnNuevo","#btnEditar","#btnEliminar"]]'>Nuevo</a>
-                                <a href="#" class="btn btn-dark " id="btnCancelar" data-ed='[["#btnNuevo"],["#btnGuardar","#btnEditar","#btnEliminar","#btnCancelar"]]'>Cancelar</a>
-                                <a href="#" class="btn btn-success" id="btnGuardar" data-ed='[["#btnEditar","#btnCancelar","#btnNuevo","#btnEliminar"],["#btnGuardar"]]'>Guardar</a>
-                                <a href="#" class="btn btn-warning" id="btnEditar" data-ed='[[],[]]'>Editar</a>
-                                <a href="#" class="btn btn-danger" id="btnEliminar" data-ed='[["#btnNuevo"],["#btnGuardar","#btnEditar","#btnEliminar","#btnCancelar"]]'>Eliminar</a>
-                            </div>
-                        </div>
-                    </div> 
-                </form>
-            </div>
+      <h3>Registrar País</h3>
+      <form id="paisForm">
+        <div class="mb-3">
+          <label for="nombrePais" class="form-label">Nombre del País</label>
+          <input type="text" id="nombrePais" class="form-control" placeholder="Ej: Colombia" required />
         </div>
-      `;
-      this.querySelector("#btnNuevo").addEventListener("click",(e) =>{
-        this.ctrlBtn(e.target.dataset.ed);
-        this.resetIdView();
-        this.disableFrm(false);
-      })
-      this.querySelector("#btnCancelar").addEventListener("click",(e) =>{
-        this.ctrlBtn(e.target.dataset.ed);
-        this.resetIdView();
-        this.disableFrm(true);
-      })
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </form>
+      <div id="mensajePais" class="mt-3"></div>
+    `;
+
+    this.querySelector("#paisForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nombrePais = this.querySelector("#nombrePais").value.trim();
+
+      if (!nombrePais) {
+        this.mostrarMensaje("⚠️ Ingresa un nombre de país", "danger");
+        return;
+      }
+
+      const datos = { name: nombrePais };
+
+      try {
+        const response = await postWorks(datos, "countries");
+        if (response.ok) {
+          this.mostrarMensaje("✅ País registrado correctamente", "success");
+          this.querySelector("#paisForm").reset();
+        } else {
+          this.mostrarMensaje("❌ Error al registrar el país", "danger");
+        }
+      } catch (err) {
+        console.error(err);
+        this.mostrarMensaje("❌ Error en la conexión con la API", "danger");
+      }
+    });
   }
-resetIdView =() =>{
-    const idView = document.querySelector('#idView');
-    idView.innerHTML = '';   
+
+  mostrarMensaje(msg, tipo) {
+    const div = this.querySelector("#mensajePais");
+    div.innerHTML = `<div class="alert alert-${tipo}" role="alert">${msg}</div>`;
+  }
 }
-eventoEditar =() =>{
-    document.querySelector('#btnEditar').addEventListener("click",(e) =>{
-        this.editData();
-        e.stopImmediatePropagation();
-        e.preventDefault();        
-    });
-}
-eventoEliminar =() =>{
-    document.querySelector('#btnEliminar').addEventListener("click",(e) =>{
-        this.delData();
-        e.stopImmediatePropagation();
-        e.preventDefault();        
-    });
-}
-ctrlBtn = (e) =>{
-    let data = JSON.parse(e);
-    data[0].forEach(boton => {
-        let btnActual = document.querySelector(boton);
-        btnActual.classList.remove('disabled');
-    });
-    data[1].forEach(boton => {
-        let btnActual = document.querySelector(boton);
-        btnActual.classList.add('disabled');
-    });
-}
-enabledBtns =() =>{
-    document.querySelectorAll(".btn").forEach((val, id) => {
-        this.ctrlBtn(val.dataset.ed);
-    })
-}
-editData = () =>{
-    const frmRegistro = document.querySelector('#frmDataContacto');
-    const datos = Object.fromEntries(new FormData(frmRegistro).entries());
-    const idView = document.querySelector('#idView');
-    let id = idView.textContent;
-    patchContacts(datos,id)
-    .then(response => {
-        // Verificar si la solicitud fue exitosa (código de respuesta en el rango 200)
-        if (response.ok) {
-            return response.json(); // Devolver la respuesta como JSON
-        } else {
-            // Si la respuesta no fue exitosa, lanzar una excepción
-            throw new Error(`Error en la solicitud POST: ${response.status} - ${response.statusText}`);
-        }
-    })
-    .then(responseData => {
-        // Hacer algo con la respuesta exitosa si es necesario
-    })
-    .catch(error => {
-        console.error('Error en la solicitud POST:', error.message);
-        // Puedes manejar el error de otra manera si es necesario
-    });
-    
-}
-delData = () =>{
-    const idView = document.querySelector('#idView');
-    let id = idView.textContent;
-    deleteContacts(id)
-    .then(response => {
-        // Verificar si la solicitud fue exitosa (código de respuesta en el rango 200)
-        if (response.ok) {
-            return response.json(); // Devolver la respuesta como JSON
-        } else {
-            // Si la respuesta no fue exitosa, lanzar una excepción
-            throw new Error(`Error en la solicitud POST: ${response.status} - ${response.statusText}`);
-        }
-    })
-    .then(responseData => {
-        this.resetIdView();
-        this.disableFrm(true);
-        this.ctrlBtn(e.target.dataset.ed);
-        // Hacer algo con la respuesta exitosa si es necesario
-    })
-    .catch(error => {
-        console.error('Error en la solicitud POST:', error.message);
-        // Puedes manejar el error de otra manera si es necesario
-    });   
-}
-saveData = () =>{
-        const frmRegistro = document.querySelector('#frmDataContacto');
-        document.querySelector('#btnGuardar').addEventListener("click",(e) =>{
-            const datos = Object.fromEntries(new FormData(frmRegistro).entries());
-            postWorks(datos,ruta)
-            .then(response => {
-                // Verificar si la solicitud fue exitosa (código de respuesta en el rango 200)
-                if (response.ok) {
-                    return response.json(); // Devolver la respuesta como JSON
-                } else {
-                    // Si la respuesta no fue exitosa, lanzar una excepción
-                    throw new Error(`Error en la solicitud POST: ${response.status} - ${response.statusText}`);
-                }
-            })
-            .then(responseData => {
-                // Hacer algo con la respuesta exitosa si es necesario
-                this.viewData(responseData.id);
-            })
-            .catch(error => {
-                console.error('Error en la solicitud POST:', error.message);
-                // Puedes manejar el error de otra manera si es necesario
-            });
-            this.ctrlBtn(e.target.dataset.ed);
-            e.stopImmediatePropagation();
-            e.preventDefault();
-        })
-}
-viewData = (id)=>{
-    const idView = document.querySelector('#idView');
-    idView.innerHTML = id;
-}
-disableFrm = (estado) =>{
-    let frm={
-        nombreContacto: '', 
-        apellidoContacto: '', 
-        nroCelular: '', 
-        emailContacto: '', 
-        nroResidencia: ''
-    }
-        const frmRegistro = document.querySelector('#frmDataContacto');
-        let myFrm = new FormData();
-        Object.entries(WorkModel).forEach(([key, value]) => myFrm.append(key, value));
-        myFrm.forEach((value, key) => {
-             frmRegistro.elements[key].value= value;
-             frmRegistro.elements[key].disabled = estado;
-        })
-    }
-}
-customElements.define("Pais-work", PaisWork);
+
+customElements.define("pais-work", PaisWork);

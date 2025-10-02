@@ -22,7 +22,7 @@ const getWork = async() => {
 }
 const postWork = async (datos,ruta) => {
     try {
-        return await fetch(`${URL_API}/works/${ruta}`, {
+        return await fetch(`${URL_API}/${ruta}`, {
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify(datos)
@@ -34,7 +34,7 @@ const postWork = async (datos,ruta) => {
 const patchWork = async (datos,ruta,id) =>{
 
     try {
-        return await fetch(`${URL_API}/works/${ruta}/${id}`, {
+        return await fetch(`${URL_API}/${ruta}/${id}`, {
             method: "PATCH",
             headers: myHeaders,
             body: JSON.stringify(datos)
