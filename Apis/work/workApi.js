@@ -20,9 +20,9 @@ const getWork = async() => {
 	}
     
 }
-const postWork = async (datos) => {
+const postWork = async (datos,ruta) => {
     try {
-        return await fetch(`${URL_API}/works`, {
+        return await fetch(`${URL_API}/works/${ruta}`, {
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify(datos)
@@ -31,10 +31,10 @@ const postWork = async (datos) => {
         console.error('Error en la solicitud POST:', error.message);
     }
 }
-const patchWork = async (datos,id) =>{
+const patchWork = async (datos,ruta,id) =>{
 
     try {
-        return await fetch(`${URL_API}/works/${id}`, {
+        return await fetch(`${URL_API}/works/${ruta}/${id}`, {
             method: "PATCH",
             headers: myHeaders,
             body: JSON.stringify(datos)

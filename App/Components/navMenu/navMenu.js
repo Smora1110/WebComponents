@@ -5,9 +5,6 @@ export class NavMenu extends HTMLElement {
     }
     render() {
         this.innerHTML = /* html */ `
-        <style rel="stylesheet">
-          @import "./App/Components/navMenu/menuStyle.css";
-        </style>
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <a class="navbar-brand">Work</a>
@@ -33,9 +30,10 @@ export class NavMenu extends HTMLElement {
                 let mainContent = document.querySelector('#mainContent');
                 mainContent.innerHTML = "";
                 switch (data[0]) {
-                    case 'c':
+                    case 'r':
                         mainContent.innerHTML = "<work-component></work-component>";
                         break;
+                    case 'l':
                 }
                 e.stopImmediatePropagation();
                 e.preventDefault();
