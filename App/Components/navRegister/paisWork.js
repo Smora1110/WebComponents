@@ -25,7 +25,7 @@ export class PaisWork extends HTMLElement {
       const nombrePais = this.querySelector("#nombrePais").value.trim();
 
       if (!nombrePais) {
-        this.mostrarMensaje("⚠️ Ingresa un nombre de país", "danger");
+        this.mostrarMensaje("Ingresa un nombre de país", "danger");
         return;
       }
 
@@ -34,14 +34,14 @@ export class PaisWork extends HTMLElement {
       try {
         const response = await postWorks(datos, "countries");
         if (response.ok) {
-          this.mostrarMensaje("✅ País registrado correctamente", "success");
+          this.mostrarMensaje("País registrado correctamente", "success");
           this.querySelector("#paisForm").reset();
         } else {
-          this.mostrarMensaje("❌ Error al registrar el país", "danger");
+          this.mostrarMensaje("Error al registrar el país", "danger");
         }
       } catch (err) {
         console.error(err);
-        this.mostrarMensaje("❌ Error en la conexión con la API", "danger");
+        this.mostrarMensaje("Error en la conexión con la API", "danger");
       }
     });
   }
