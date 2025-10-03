@@ -8,11 +8,11 @@ Aplicación web modular con **Web Components** para gestionar entidades de una b
 
 ## Componentes
 
-- **paisWork.js**: Países
-- **regionWork.js**: Regiones
-- **ciudadWork.js**: Ciudades
-- **companiaWork.js**: Compañías
-- **marcaWork.js / branchesWork.js**: Sucursales
+- **paisWeb.js**: Países
+- **regionWeb.js**: Regiones
+- **ciudadWeb.js**: Ciudades
+- **companiaWeb.js**: Compañías
+- **marcaWeb.js / branchesWeb.js**: Sucursales
 - **listarComponent.js**: Listado completo
 
 ---
@@ -20,7 +20,7 @@ Aplicación web modular con **Web Components** para gestionar entidades de una b
 ## API Genérica
 
 ```js
-getWorks(ruta)                // GET /ruta
-postWorks(datos, ruta)        // POST /ruta
-putWorks(id, datos, ruta)     // PUT /ruta/:id
-deleteWorks(id, ruta)         // DELETE /ruta/:id
+getWebs(ruta)                // GET /ruta
+postWebs(datos, ruta)        // POST /ruta
+putWebs(id, datos, ruta)     // PUT /ruta/:id
+deleteWebs(id, ruta)         // DELETE /ruta/:id
