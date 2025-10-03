@@ -1,6 +1,6 @@
-import { postWorks, getWorks, putWorks, deleteWorks } from "../../../Apis/work/workApi.js";
+import { postWebs, getWebs, putWebs, deleteWebs } from "../../../Apis/web/webApi.js";
 
-export class PaisWork extends HTMLElement {
+export class PaisWeb extends HTMLElement {
   constructor() {
     super();
   }
@@ -47,7 +47,7 @@ export class PaisWork extends HTMLElement {
       }
       const datos = { name: nombrePais };
       try {
-        const response = await postWorks(datos, "countries");
+        const response = await postWebs(datos, "countries");
         if (response.ok) {
           this.mostrarMensaje("País registrado correctamente", "success");
           this.querySelector("#paisForm").reset();
@@ -65,7 +65,7 @@ export class PaisWork extends HTMLElement {
     const tbody = this.querySelector(".pais-list");
     tbody.innerHTML = `<tr><td colspan="3">Cargando...</td></tr>`;
     try {
-      const response = await getWorks("countries");
+      const response = await getWebs("countries");
       const paises = await response.json();
       if (!Array.isArray(paises) || paises.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="text-center">No hay países registrados</td></tr>`;
@@ -97,7 +97,7 @@ export class PaisWork extends HTMLElement {
         const id = btn.getAttribute("data-id");
         if (confirm("¿Seguro que deseas eliminar este país?")) {
           try {
-            const response = await deleteWorks(id, "countries");
+            const response = await deleteWebs(id, "countries");
             if (response.ok) {
               this.mostrarMensaje("País eliminado", "success");
               this.cargarPaises();
@@ -129,7 +129,7 @@ export class PaisWork extends HTMLElement {
             return;
           }
           try {
-            const response = await putWorks(id, { name: nuevoNombre }, "countries");
+            const response = await putWebs(id, { name: nuevoNombre }, "countries");
             if (response.ok) {
               this.mostrarMensaje("País editado correctamente", "success");
               this.querySelector("#paisForm").reset();
@@ -155,4 +155,4 @@ export class PaisWork extends HTMLElement {
   }
 }
 
-customElements.define("pais-work", PaisWork);
+customElements.define("pais-web", PaisWeb);

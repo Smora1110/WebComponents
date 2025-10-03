@@ -1,4 +1,4 @@
-import { getWorks } from "../../../Apis/work/workApi.js";
+import { getWebs } from "../../../Apis/web/webApi.js";
 
 export class ListarComponent extends HTMLElement {
   constructor() {
@@ -23,10 +23,10 @@ export class ListarComponent extends HTMLElement {
 
     // Cargar todos los datos relacionados primero
     const [paises, regiones, ciudades, companias] = await Promise.all([
-      getWorks("countries").then(r => r.json()),
-      getWorks("regions").then(r => r.json()),
-      getWorks("cities").then(r => r.json()),
-      getWorks("companies").then(r => r.json())
+      getWebs("countries").then(r => r.json()),
+      getWebs("regions").then(r => r.json()),
+      getWebs("cities").then(r => r.json()),
+      getWebs("companies").then(r => r.json())
     ]);
 
     // Define entidades y columnas
@@ -64,7 +64,7 @@ export class ListarComponent extends HTMLElement {
     for (const entidad of entidades) {
       const tbody = this.querySelector(`#tb-${entidad.ruta}`);
       try {
-        const response = await getWorks(entidad.ruta);
+        const response = await getWebs(entidad.ruta);
         const datos = await response.json();
         if (!Array.isArray(datos) || datos.length === 0) {
           tbody.innerHTML = `<tr><td colspan="${entidad.columnas.length}" class="text-center">No hay datos</td></tr>`;

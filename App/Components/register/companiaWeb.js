@@ -1,6 +1,6 @@
-import { postWorks, getWorks, putWorks, deleteWorks } from "../../../Apis/work/workApi.js";
+import { postWebs, getWebs, putWebs, deleteWebs } from "../../../Apis/web/webApi.js";
 
-export class CompaniaWork extends HTMLElement {
+export class CompaniaWeb extends HTMLElement {
   constructor() {
     super();
   }
@@ -74,7 +74,7 @@ export class CompaniaWork extends HTMLElement {
       }
       const datos = { name: nombre, niu, CityId: parseInt(cityId), adress, email };
       try {
-        const response = await postWorks(datos, "companies");
+        const response = await postWebs(datos, "companies");
         if (response.ok) {
           this.mostrarMensaje("Compañía registrada correctamente", "success");
           this.querySelector("#companyForm").reset();
@@ -90,7 +90,7 @@ export class CompaniaWork extends HTMLElement {
 
   async cargarCiudadesSelect() {
     try {
-      const response = await getWorks("cities");
+      const response = await getWebs("cities");
       const ciudades = await response.json();
       const select = this.querySelector("#citySelect");
       ciudades.forEach(c => {
@@ -106,7 +106,7 @@ export class CompaniaWork extends HTMLElement {
     const tbody = this.querySelector(".company-list");
     tbody.innerHTML = `<tr><td colspan="7">Cargando...</td></tr>`;
     try {
-      const response = await getWorks("companies");
+      const response = await getWebs("companies");
       const companies = await response.json();
       if (!Array.isArray(companies) || companies.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center">No hay compañías registradas</td></tr>`;
@@ -117,7 +117,7 @@ export class CompaniaWork extends HTMLElement {
         // Obtener nombre de la ciudad
         let cityNombre = "";
         try {
-          const cityResp = await getWorks(`cities/${company.CityId}`);
+          const cityResp = await getWebs(`cities/${company.CityId}`);
           if (cityResp.ok) {
             const city = await cityResp.json();
             cityNombre = city.name;
@@ -150,7 +150,7 @@ export class CompaniaWork extends HTMLElement {
         const id = btn.getAttribute("data-id");
         if (confirm("¿Seguro que deseas eliminar esta compañía?")) {
           try {
-            const response = await deleteWorks(id, "companies");
+            const response = await deleteWebs(id, "companies");
             if (response.ok) {
               this.mostrarMensaje("Compañía eliminada", "success");
               this.cargarCompanies();
@@ -186,7 +186,7 @@ export class CompaniaWork extends HTMLElement {
             return;
           }
           try {
-            const response = await putWorks(id, { name: nombre, niu, CityId: parseInt(cityId), adress, email }, "companies");
+            const response = await putWebs(id, { name: nombre, niu, CityId: parseInt(cityId), adress, email }, "companies");
             if (response.ok) {
               this.mostrarMensaje("Compañía editada correctamente", "success");
               this.querySelector("#companyForm").reset();
@@ -213,4 +213,4 @@ export class CompaniaWork extends HTMLElement {
   }
 }
 
-customElements.define("compania-work", CompaniaWork);
+customElements.define("compania-web", CompaniaWeb);

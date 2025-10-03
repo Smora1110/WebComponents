@@ -1,0 +1,82 @@
+{
+  "countries": [
+    {
+      "name": "Colombia",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Argentina"
+    },
+    {
+      "name": "Colombia",
+      "id": 3
+    }
+  ],
+  "regions": [
+    {
+      "id": 1,
+      "name": "Antioquia",
+      "CountryId": 1
+    },
+    {
+      "id": 2,
+      "name": "Buenos Aires",
+      "CountryId": 2
+    }
+  ],
+  "cities": [
+    {
+      "id": 1,
+      "name": "Medellín",
+      "RegionId": 1
+    },
+    {
+      "id": 2,
+      "name": "Buenos Aires",
+      "RegionId": 2
+    }
+  ],
+  "companies": [
+    {
+      "id": 1,
+      "name": "Empresa A",
+      "niu": "900123456",
+      "CityId": 1,
+      "adress": "Calle 1 #2-3",
+      "email": "contacto@empresaa.com"
+    },
+    {
+      "id": 2,
+      "name": "Empresa B",
+      "niu": "900654321",
+      "CityId": 2,
+      "adress": "Av. Siempre Viva 123",
+      "email": "info@empresab.com"
+    }
+  ],
+  "branches": [
+    {
+      "id": 1,
+      "number_Comercial": "001",
+      "niu": "900123456",
+      "Contact_name": "Juan Perez",
+      "adress": "Calle 1 #2-3",
+      "email": "sucursal1@empresaa.com",
+      "phone": "3001234567",
+      "cityId": 1,
+      "CompanyId": 1
+    },
+    {
+      "id": 2,
+      "number_Comercial": "002",
+      "niu": "900654321",
+      "Contact_name": "Ana Gomez",
+      "adress": "Av. Siempre Viva 123",
+      "email": "sucursal2@empresab.com",
+      "phone": "3007654321",
+      "cityId": 2,
+      "CompanyId": 2
+    }
+  ]
+}

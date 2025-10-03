@@ -1,6 +1,6 @@
-import { postWorks, getWorks, putWorks, deleteWorks } from "../../../Apis/work/workApi.js";
+import { postWebs, getWebs, putWebs, deleteWebs } from "../../../Apis/web/webApi.js";
 
-export class MarcaWork extends HTMLElement {
+export class MarcaWeb extends HTMLElement {
   constructor() {
     super();
   }
@@ -90,7 +90,7 @@ export class MarcaWork extends HTMLElement {
         return;
       }
       try {
-        const response = await postWorks(datos, "branches");
+        const response = await postWebs(datos, "branches");
         if (response.ok) {
           this.mostrarMensaje("Sucursal registrada correctamente", "success");
           this.querySelector("#branchForm").reset();
@@ -106,7 +106,7 @@ export class MarcaWork extends HTMLElement {
 
   async cargarCiudadesSelect() {
     try {
-      const response = await getWorks("cities");
+      const response = await getWebs("cities");
       const ciudades = await response.json();
       const select = this.querySelector("#cityBranch");
       ciudades.forEach(c => {
@@ -123,7 +123,7 @@ async cargarBranches() {
   const tbody = this.querySelector(".branch-list");
   tbody.innerHTML = `<tr><td colspan="10">Cargando...</td></tr>`;
   try {
-    const response = await getWorks("branches");
+    const response = await getWebs("branches");
     const branches = await response.json();
     if (!Array.isArray(branches) || branches.length === 0) {
       tbody.innerHTML = `<tr><td colspan="10" class="text-center">No hay sucursales registradas</td></tr>`;
@@ -134,7 +134,7 @@ async cargarBranches() {
       // Obtener nombre de ciudad
       let ciudadNombre = branch.cityId;
       try {
-        const ciudadResp = await getWorks(`cities/${branch.cityId}`);
+        const ciudadResp = await getWebs(`cities/${branch.cityId}`);
         if (ciudadResp.ok) {
           const ciudad = await ciudadResp.json();
           ciudadNombre = ciudad.name;
@@ -143,7 +143,7 @@ async cargarBranches() {
       // Obtener nombre de compañía
       let companiaNombre = branch.CompanyId;
       try {
-        const companiaResp = await getWorks(`companies/${branch.CompanyId}`);
+        const companiaResp = await getWebs(`companies/${branch.CompanyId}`);
         if (companiaResp.ok) {
           const compania = await companiaResp.json();
           companiaNombre = compania.name;
@@ -187,7 +187,7 @@ async cargarBranches() {
         const id = btn.getAttribute("data-id");
         if (confirm("¿Seguro que deseas eliminar esta sucursal?")) {
           try {
-            const response = await deleteWorks(id, "branches");
+            const response = await deleteWebs(id, "branches");
             if (response.ok) {
               this.mostrarMensaje("Sucursal eliminada", "success");
               this.cargarBranches();
@@ -230,7 +230,7 @@ async cargarBranches() {
             return;
           }
           try {
-            const response = await putWorks(id, datos, "branches");
+            const response = await putWebs(id, datos, "branches");
             if (response.ok) {
               this.mostrarMensaje("Sucursal editada correctamente", "success");
               this.querySelector("#branchForm").reset();
@@ -257,4 +257,4 @@ async cargarBranches() {
   }
 }
 
-customElements.define("marca-work", MarcaWork);
+customElements.define("marca-web", MarcaWeb);

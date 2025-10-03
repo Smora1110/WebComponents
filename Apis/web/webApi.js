@@ -4,7 +4,7 @@ const myHeaders = new Headers({
 });
 
 // GET: Traer todos los elementos de una ruta
-export const getWorks = async (ruta) => {
+export const getWebs = async (ruta) => {
     try {
         const respuesta = await fetch(`${URL_API}/${ruta}`);
         if (respuesta.status === 200) {
@@ -22,7 +22,7 @@ export const getWorks = async (ruta) => {
 };
 
 // POST: Crear un elemento en una ruta
-export const postWorks = async (datos, ruta) => {
+export const postWebs = async (datos, ruta) => {
     try {
         return await fetch(`${URL_API}/${ruta}`, {
             method: "POST",
@@ -35,7 +35,7 @@ export const postWorks = async (datos, ruta) => {
 };
 
 // PUT: Actualizar un elemento por id en una ruta
-export const putWorks = async (id, datos, ruta) => {
+export const putWebs = async (id, datos, ruta) => {
     try {
         return await fetch(`${URL_API}/${ruta}/${id}`, {
             method: "PUT",
@@ -48,7 +48,7 @@ export const putWorks = async (id, datos, ruta) => {
 };
 
 // PATCH: Actualizar parcialmente un elemento por id en una ruta
-export const patchWorks = async (id, datos, ruta) => {
+export const patchWebs = async (id, datos, ruta) => {
     try {
         return await fetch(`${URL_API}/${ruta}/${id}`, {
             method: "PATCH",
@@ -61,7 +61,7 @@ export const patchWorks = async (id, datos, ruta) => {
 };
 
 // DELETE: Eliminar un elemento por id en una ruta
-export const deleteWorks = async (id, ruta) => {
+export const deleteWebs = async (id, ruta) => {
     try {
         return await fetch(`${URL_API}/${ruta}/${id}`, {
             method: "DELETE",

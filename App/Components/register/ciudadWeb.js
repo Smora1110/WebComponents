@@ -1,6 +1,6 @@
-import { postWorks, getWorks, putWorks, deleteWorks } from "../../../Apis/work/workApi.js";
+import { postWebs, getWebs, putWebs, deleteWebs } from "../../../Apis/web/webApi.js";
 
-export class CiudadWork extends HTMLElement {
+export class CiudadWeb extends HTMLElement {
   constructor() {
     super();
   }
@@ -56,7 +56,7 @@ export class CiudadWork extends HTMLElement {
       }
       const datos = { name: nombreCiudad, RegionId: parseInt(regionId) };
       try {
-        const response = await postWorks(datos, "cities");
+        const response = await postWebs(datos, "cities");
         if (response.ok) {
           this.mostrarMensaje("Ciudad registrada correctamente", "success");
           this.querySelector("#ciudadForm").reset();
@@ -72,7 +72,7 @@ export class CiudadWork extends HTMLElement {
 
   async cargarRegionesSelect() {
     try {
-      const response = await getWorks("regions");
+      const response = await getWebs("regions");
       const regiones = await response.json();
       const select = this.querySelector("#regionSelect");
       regiones.forEach(r => {
@@ -90,7 +90,7 @@ export class CiudadWork extends HTMLElement {
     const tbody = this.querySelector(".ciudad-list");
     tbody.innerHTML = `<tr><td colspan="4">Cargando...</td></tr>`;
     try {
-      const response = await getWorks("cities");
+      const response = await getWebs("cities");
       const ciudades = await response.json();
       if (!Array.isArray(ciudades) || ciudades.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" class="text-center">No hay ciudades registradas</td></tr>`;
@@ -101,7 +101,7 @@ export class CiudadWork extends HTMLElement {
         // Obtener nombre de la región
         let regionNombre = "";
         try {
-          const regionResp = await getWorks(`regions/${ciudad.RegionId}`);
+          const regionResp = await getWebs(`regions/${ciudad.RegionId}`);
           if (regionResp.ok) {
             const region = await regionResp.json();
             regionNombre = region.name;
@@ -131,7 +131,7 @@ export class CiudadWork extends HTMLElement {
         const id = btn.getAttribute("data-id");
         if (confirm("¿Seguro que deseas eliminar esta ciudad?")) {
           try {
-            const response = await deleteWorks(id, "cities");
+            const response = await deleteWebs(id, "cities");
             if (response.ok) {
               this.mostrarMensaje("Ciudad eliminada", "success");
               this.cargarCiudades();
@@ -163,7 +163,7 @@ export class CiudadWork extends HTMLElement {
             return;
           }
           try {
-            const response = await putWorks(id, { name: nuevoNombre, RegionId: parseInt(nuevaRegionId) }, "cities");
+            const response = await putWebs(id, { name: nuevoNombre, RegionId: parseInt(nuevaRegionId) }, "cities");
             if (response.ok) {
               this.mostrarMensaje("Ciudad editada correctamente", "success");
               this.querySelector("#ciudadForm").reset();
@@ -190,4 +190,4 @@ export class CiudadWork extends HTMLElement {
   }
 }
 
-customElements.define("ciudad-work", CiudadWork);
+customElements.define("ciudad-web", CiudadWeb);
