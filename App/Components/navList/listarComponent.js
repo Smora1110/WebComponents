@@ -21,6 +21,14 @@ export class ListarComponent extends HTMLElement {
     const cont = this.querySelector("#db-listado");
     cont.innerHTML = `<div class="text-center my-5"><span class="spinner-border"></span> Cargando...</div>`;
 
+    // Cargar todos los datos relacionados primero
+    const [paises, regiones, ciudades, companias] = await Promise.all([
+      getWorks("countries").then(r => r.json()),
+      getWorks("regions").then(r => r.json()),
+      getWorks("cities").then(r => r.json()),
+      getWorks("companies").then(r => r.json())
+    ]);
+
     // Define entidades y columnas
     const entidades = [
       { nombre: "Países", ruta: "countries", columnas: ["id", "name"] },
@@ -52,7 +60,7 @@ export class ListarComponent extends HTMLElement {
 
     cont.innerHTML = html;
 
-    // Cargar datos de cada entidad
+    // Cargar datos de cada entidad y mostrar nombres en vez de IDs
     for (const entidad of entidades) {
       const tbody = this.querySelector(`#tb-${entidad.ruta}`);
       try {
@@ -64,11 +72,31 @@ export class ListarComponent extends HTMLElement {
         }
         tbody.innerHTML = "";
         datos.forEach(item => {
-          tbody.innerHTML += `
-            <tr>
-              ${entidad.columnas.map(col => `<td>${item[col] ?? ""}</td>`).join("")}
-            </tr>
-          `;
+          let row = entidad.columnas.map(col => {
+            // Mostrar nombres en vez de IDs
+            if (entidad.ruta === "regions" && col === "CountryId") {
+              const pais = paises.find(p => p.id == item.CountryId);
+              return `<td>${pais ? pais.name : item.CountryId}</td>`;
+            }
+            if (entidad.ruta === "cities" && col === "RegionId") {
+              const region = regiones.find(r => r.id == item.RegionId);
+              return `<td>${region ? region.name : item.RegionId}</td>`;
+            }
+            if (entidad.ruta === "companies" && col === "CityId") {
+              const ciudad = ciudades.find(c => c.id == item.CityId);
+              return `<td>${ciudad ? ciudad.name : item.CityId}</td>`;
+            }
+            if (entidad.ruta === "branches" && col === "cityId") {
+              const ciudad = ciudades.find(c => c.id == item.cityId);
+              return `<td>${ciudad ? ciudad.name : item.cityId}</td>`;
+            }
+            if (entidad.ruta === "branches" && col === "CompanyId") {
+              const compania = companias.find(c => c.id == item.CompanyId);
+              return `<td>${compania ? compania.name : item.CompanyId}</td>`;
+            }
+            return `<td>${item[col] ?? ""}</td>`;
+          }).join("");
+          tbody.innerHTML += `<tr>${row}</tr>`;
         });
       } catch (err) {
         tbody.innerHTML = `<tr><td colspan="${entidad.columnas.length}" class="text-danger">Error al cargar datos</td></tr>`;

@@ -27,9 +27,9 @@ export class PaisWork extends HTMLElement {
           <table class="table table-striped table-bordered mb-0">
             <thead class="table-dark">
               <tr>
-                <th style="width:60px;">ID</th>
+                <th>ID</th>
                 <th>Nombre</th>
-                <th style="width:140px;">Acciones</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody class="pais-list"></tbody>
@@ -78,8 +78,8 @@ export class PaisWork extends HTMLElement {
             <td>${pais.id}</td>
             <td>${pais.name}</td>
             <td>
-              <button class="btn btn-sm btn-warning editar" data-id="${pais.id}" data-nombre="${pais.name}">Editar</button>
-              <button class="btn btn-sm btn-danger eliminar" data-id="${pais.id}">Eliminar</button>
+              <button type="button" class="btn btn-sm btn-warning editar" data-id="${pais.id}" data-nombre="${pais.name}">Editar</button>
+              <button type="button" class="btn btn-sm btn-danger eliminar" data-id="${pais.id}">Eliminar</button>
             </td>
           </tr>
         `;
@@ -91,8 +91,9 @@ export class PaisWork extends HTMLElement {
   }
 
   agregarEventosBotones() {
+    // Botón eliminar
     this.querySelectorAll(".eliminar").forEach(btn => {
-      btn.addEventListener("click", async () => {
+      btn.onclick = async () => {
         const id = btn.getAttribute("data-id");
         if (confirm("¿Seguro que deseas eliminar este país?")) {
           try {
@@ -107,11 +108,12 @@ export class PaisWork extends HTMLElement {
             this.mostrarMensaje("Error en la conexión con la API", "danger");
           }
         }
-      });
+      };
     });
 
+    // Botón editar
     this.querySelectorAll(".editar").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.onclick = () => {
         const id = btn.getAttribute("data-id");
         const nombre = btn.getAttribute("data-nombre");
         const input = this.querySelector("#nombrePais");
@@ -143,7 +145,7 @@ export class PaisWork extends HTMLElement {
             this.mostrarMensaje("Error en la conexión con la API", "danger");
           }
         };
-      });
+      };
     });
   }
 

@@ -7,6 +7,7 @@ export class MarcaWork extends HTMLElement {
 
   connectedCallback() {
     this.render();
+    this.cargarCiudadesSelect();
     this.cargarBranches();
   }
 
@@ -39,13 +40,12 @@ export class MarcaWork extends HTMLElement {
           <input type="text" id="phoneBranch" class="form-control" required />
         </div>
         <div class="mb-3">
-          <label for="cityBranch" class="form-label">ID Ciudad</label>
-          <input type="number" id="cityBranch" class="form-control" required />
+          <label for="cityBranch" class="form-label">Ciudad</label>
+          <select id="cityBranch" class="form-select" required>
+            <option value="">-- Selecciona una ciudad --</option>
+          </select>
         </div>
-        <div class="mb-3">
-          <label for="companyBranch" class="form-label">ID Compañía</label>
-          <input type="number" id="companyBranch" class="form-control" required />
-        </div>
+        <!-- CompanyId es fijo "uk" -->
         <button type="submit" class="btn btn-primary">Guardar</button>
       </form>
       <div id="mensajeBranch" class="mt-3"></div>
@@ -62,8 +62,8 @@ export class MarcaWork extends HTMLElement {
                 <th>Dirección</th>
                 <th>Email</th>
                 <th>Teléfono</th>
-                <th>CiudadId</th>
-                <th>CompañíaId</th>
+                <th>Ciudad</th>
+                <th>Compañía</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -82,8 +82,8 @@ export class MarcaWork extends HTMLElement {
         adress: this.querySelector("#adressBranch").value.trim(),
         email: this.querySelector("#emailBranch").value.trim(),
         phone: this.querySelector("#phoneBranch").value.trim(),
-        cityId: parseInt(this.querySelector("#cityBranch").value),
-        CompanyId: parseInt(this.querySelector("#companyBranch").value)
+        cityId: this.querySelector("#cityBranch").value,
+        CompanyId: "uk" // Valor fijo
       };
       if (Object.values(datos).some(val => !val)) {
         this.mostrarMensaje("Debes completar todos los campos", "danger");
@@ -104,51 +104,83 @@ export class MarcaWork extends HTMLElement {
     });
   }
 
-  async cargarBranches() {
-    const tbody = this.querySelector(".branch-list");
-    tbody.innerHTML = `<tr><td colspan="10">Cargando...</td></tr>`;
+  async cargarCiudadesSelect() {
     try {
-      const response = await getWorks("branches");
-      const branches = await response.json();
-      if (!Array.isArray(branches) || branches.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="text-center">No hay sucursales registradas</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = "";
-      branches.forEach(branch => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${branch.id}</td>
-            <td>${branch.number_Comercial}</td>
-            <td>${branch.niu}</td>
-            <td>${branch.Contact_name}</td>
-            <td>${branch.adress}</td>
-            <td>${branch.email}</td>
-            <td>${branch.phone}</td>
-            <td>${branch.cityId}</td>
-            <td>${branch.CompanyId}</td>
-            <td>
-              <button class="btn btn-sm btn-warning editar"
-                data-id="${branch.id}"
-                data-number="${branch.number_Comercial}"
-                data-niu="${branch.niu}"
-                data-contact="${branch.Contact_name}"
-                data-adress="${branch.adress}"
-                data-email="${branch.email}"
-                data-phone="${branch.phone}"
-                data-city="${branch.cityId}"
-                data-company="${branch.CompanyId}">Editar</button>
-              <button class="btn btn-sm btn-danger eliminar" data-id="${branch.id}">Eliminar</button>
-            </td>
-          </tr>
-        `;
+      const response = await getWorks("cities");
+      const ciudades = await response.json();
+      const select = this.querySelector("#cityBranch");
+      ciudades.forEach(c => {
+        const option = document.createElement("option");
+        option.value = c.id;
+        option.textContent = c.name;
+        select.appendChild(option);
       });
-      this.agregarEventosBotones();
-    } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="10" class="text-danger">Error al cargar sucursales</td></tr>`;
-    }
+    } catch (err) {}
   }
 
+  // ...existing code...
+async cargarBranches() {
+  const tbody = this.querySelector(".branch-list");
+  tbody.innerHTML = `<tr><td colspan="10">Cargando...</td></tr>`;
+  try {
+    const response = await getWorks("branches");
+    const branches = await response.json();
+    if (!Array.isArray(branches) || branches.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center">No hay sucursales registradas</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = "";
+    for (const branch of branches) {
+      // Obtener nombre de ciudad
+      let ciudadNombre = branch.cityId;
+      try {
+        const ciudadResp = await getWorks(`cities/${branch.cityId}`);
+        if (ciudadResp.ok) {
+          const ciudad = await ciudadResp.json();
+          ciudadNombre = ciudad.name;
+        }
+      } catch {}
+      // Obtener nombre de compañía
+      let companiaNombre = branch.CompanyId;
+      try {
+        const companiaResp = await getWorks(`companies/${branch.CompanyId}`);
+        if (companiaResp.ok) {
+          const compania = await companiaResp.json();
+          companiaNombre = compania.name;
+        }
+      } catch {}
+      tbody.innerHTML += `
+        <tr>
+          <td>${branch.id}</td>
+          <td>${branch.number_Comercial}</td>
+          <td>${branch.niu}</td>
+          <td>${branch.Contact_name}</td>
+          <td>${branch.adress}</td>
+          <td>${branch.email}</td>
+          <td>${branch.phone}</td>
+          <td>${ciudadNombre}</td>
+          <td>${companiaNombre}</td>
+          <td>
+            <button class="btn btn-sm btn-warning editar"
+              data-id="${branch.id}"
+              data-number="${branch.number_Comercial}"
+              data-niu="${branch.niu}"
+              data-contact="${branch.Contact_name}"
+              data-adress="${branch.adress}"
+              data-email="${branch.email}"
+              data-phone="${branch.phone}"
+              data-city="${branch.cityId}">Editar</button>
+            <button class="btn btn-sm btn-danger eliminar" data-id="${branch.id}">Eliminar</button>
+          </td>
+        </tr>
+      `;
+    }
+    this.agregarEventosBotones();
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="10" class="text-danger">Error al cargar sucursales</td></tr>`;
+  }
+}
+// ...existing code...
   agregarEventosBotones() {
     this.querySelectorAll(".eliminar").forEach(btn => {
       btn.addEventListener("click", async () => {
@@ -178,7 +210,6 @@ export class MarcaWork extends HTMLElement {
         this.querySelector("#emailBranch").value = btn.getAttribute("data-email");
         this.querySelector("#phoneBranch").value = btn.getAttribute("data-phone");
         this.querySelector("#cityBranch").value = btn.getAttribute("data-city");
-        this.querySelector("#companyBranch").value = btn.getAttribute("data-company");
         const id = btn.getAttribute("data-id");
         const submitBtn = this.querySelector("#branchForm button[type='submit']");
         submitBtn.textContent = "Actualizar";
@@ -191,8 +222,8 @@ export class MarcaWork extends HTMLElement {
             adress: this.querySelector("#adressBranch").value.trim(),
             email: this.querySelector("#emailBranch").value.trim(),
             phone: this.querySelector("#phoneBranch").value.trim(),
-            cityId: parseInt(this.querySelector("#cityBranch").value),
-            CompanyId: parseInt(this.querySelector("#companyBranch").value)
+            cityId: this.querySelector("#cityBranch").value,
+            CompanyId: "uk" // Valor fijo
           };
           if (Object.values(datos).some(val => !val)) {
             this.mostrarMensaje("Debes completar todos los campos", "danger");
@@ -207,6 +238,7 @@ export class MarcaWork extends HTMLElement {
               this.cargarBranches();
               this.querySelector("#branchForm").onsubmit = null;
               this.render();
+              this.cargarCiudadesSelect();
               this.cargarBranches();
             } else {
               this.mostrarMensaje("Error al editar la sucursal", "danger");

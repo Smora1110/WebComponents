@@ -34,6 +34,8 @@ export class NavMenu extends HTMLElement {
                         mainContent.innerHTML = "<work-component></work-component>";
                         break;
                     case 'l':
+                      mainContent.innerHTML = "<listar-component></listar-component>";
+                        break;
                 }
                 e.stopImmediatePropagation();
                 e.preventDefault();
