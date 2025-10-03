@@ -17,6 +17,16 @@ export class PaisWork extends HTMLElement {
         <button type="submit" class="btn btn-primary">Guardar</button>
       </form>
       <div id="mensajePais" class="mt-3"></div>
+
+      <div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Pais
+  </div>
+  <ul class="pais list-group list-group-flush">
+    <li class="list-group-item">id</li>
+    <li class="list-group-item">nombre</li>
+  </ul>
+</div>
     `;
 
     this.querySelector("#paisForm").addEventListener("submit", async (e) => {
@@ -50,6 +60,8 @@ export class PaisWork extends HTMLElement {
     const div = this.querySelector("#mensajePais");
     div.innerHTML = `<div class="alert alert-${tipo}" role="alert">${msg}</div>`;
   }
+
+
 }
 
 customElements.define("pais-work", PaisWork);
