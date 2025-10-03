@@ -36,7 +36,7 @@ export class RegionWork extends HTMLElement {
       const paisId = this.querySelector("#paisSelect").value;
 
       if (!nombreRegion || !paisId) {
-        this.mostrarMensaje("⚠️ Debes completar todos los campos", "danger");
+        this.mostrarMensaje("Debes completar todos los campos", "danger");
         return;
       }
 
@@ -45,14 +45,14 @@ export class RegionWork extends HTMLElement {
       try {
         const response = await postWorks(datos, "regions");
         if (response.ok) {
-          this.mostrarMensaje("✅ Región registrada correctamente", "success");
+          this.mostrarMensaje("Región registrada correctamente", "success");
           this.querySelector("#regionForm").reset();
         } else {
-          this.mostrarMensaje("❌ Error al registrar la región", "danger");
+          this.mostrarMensaje("Error al registrar la región", "danger");
         }
       } catch (err) {
         console.error(err);
-        this.mostrarMensaje("❌ Error en la conexión con la API", "danger");
+        this.mostrarMensaje("Error en la conexión con la API", "danger");
       }
     });
   }
@@ -61,7 +61,7 @@ export class RegionWork extends HTMLElement {
     try {
       const response = await fetch("http://localhost:3000/countries");
       const paises = await response.json();
-      const select = this.querySelector("#paisSelec t");
+      const select = this.querySelector("#paisSelect");
 
       paises.forEach(p => {
         const option = document.createElement("option");
