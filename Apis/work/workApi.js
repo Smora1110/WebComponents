@@ -1,26 +1,28 @@
-const URL_API = "http://localhost:3000";
+const URL_API = "http://localhost:3001";
 const myHeaders = new Headers({
     "Content-Type": "application/json"
 });
-const getWork = async() => {
+
+// GET: Traer todos los elementos de una ruta
+export const getWorks = async (ruta) => {
     try {
-        const respuesta = await fetch(`${URL_API}/works`);
-		// Si la respuesta es correcta
-		if(respuesta.status === 200){
-			const datos = await respuesta.json();
-		} else if(respuesta.status === 401){
+        const respuesta = await fetch(`${URL_API}/${ruta}`);
+        if (respuesta.status === 200) {
+            return respuesta;
+        } else if (respuesta.status === 401) {
             console.log('La url no es correcta');
-		} else if(respuesta.status === 404){
-            console.log('El el Worko  no existe');
-		} else {
-            console.log('Se presento un error en la peticion consulte al Administrador');
-		} 
-	} catch(error){
+        } else if (respuesta.status === 404) {
+            console.log('El recurso no existe');
+        } else {
+            console.log('Se presentó un error en la petición, consulte al Administrador');
+        }
+    } catch (error) {
         console.log(error);
-	}
-    
-}
-const postWork = async (datos,ruta) => {
+    }
+};
+
+// POST: Crear un elemento en una ruta
+export const postWorks = async (datos, ruta) => {
     try {
         return await fetch(`${URL_API}/${ruta}`, {
             method: "POST",
@@ -30,9 +32,23 @@ const postWork = async (datos,ruta) => {
     } catch (error) {
         console.error('Error en la solicitud POST:', error.message);
     }
-}
-const patchWork = async (datos,ruta,id) =>{
+};
 
+// PUT: Actualizar un elemento por id en una ruta
+export const putWorks = async (id, datos, ruta) => {
+    try {
+        return await fetch(`${URL_API}/${ruta}/${id}`, {
+            method: "PUT",
+            headers: myHeaders,
+            body: JSON.stringify(datos)
+        });
+    } catch (error) {
+        console.error('Error en la solicitud PUT:', error.message);
+    }
+};
+
+// PATCH: Actualizar parcialmente un elemento por id en una ruta
+export const patchWorks = async (id, datos, ruta) => {
     try {
         return await fetch(`${URL_API}/${ruta}/${id}`, {
             method: "PATCH",
@@ -40,25 +56,18 @@ const patchWork = async (datos,ruta,id) =>{
             body: JSON.stringify(datos)
         });
     } catch (error) {
-        console.error('Error en la solicitud POST:', error.message);
+        console.error('Error en la solicitud PATCH:', error.message);
     }
+};
 
-}
-const deleteWork = async (id) =>{
-
+// DELETE: Eliminar un elemento por id en una ruta
+export const deleteWorks = async (id, ruta) => {
     try {
-        return await fetch(`${URL_API}/works/${id}`, {
+        return await fetch(`${URL_API}/${ruta}/${id}`, {
             method: "DELETE",
             headers: myHeaders,
         });
     } catch (error) {
-        console.error('Error en la solicitud POST:', error.message);
+        console.error('Error en la solicitud DELETE:', error.message);
     }
-
-}
-export {
-    getWork as getWorks,
-    postWork as postWorks,
-    patchWork as patchWorks,
-    deleteWork as deleteWorks
 };
